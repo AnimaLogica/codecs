@@ -55,13 +55,7 @@ defmodule ExCodecs.Compression.Blosc2 do
 
   @behaviour ExCodecs.Codec
 
-  @default_cname :lz4
-  @default_clevel 5
-  @default_shuffle :byte
-  @default_typesize 8
-
-  @valid_cnames [:blosclz, :lz4, :lz4hc, :zstd, :zlib]
-  @valid_shuffles [:none, :byte, :bit]
+  alias ExCodecs.Compression.BloscOptions
 
   @doc """
   Returns the registry metadata for the Blosc2 chunk codec.
@@ -171,23 +165,9 @@ defmodule ExCodecs.Compression.Blosc2 do
   """
   @impl true
   def encode(data, opts) when is_binary(data) and is_list(opts) do
-    cname = Keyword.get(opts, :cname, @default_cname)
-    clevel = Keyword.get(opts, :clevel, @default_clevel)
-    shuffle = Keyword.get(opts, :shuffle, @default_shuffle)
-    typesize = Keyword.get(opts, :typesize, @default_typesize)
-
-    with :ok <- validate_cname(cname),
-         :ok <- validate_clevel(clevel),
-         :ok <- validate_shuffle(shuffle),
-         :ok <- validate_typesize(typesize) do
+    with {:ok, {cname, clevel, shuffle, typesize}} <- BloscOptions.parse(opts, :blosc2) do
       ExCodecs.NIF.safe_call(:blosc2, fn ->
-        ExCodecs.Native.blosc2_compress(
-          data,
-          cname_to_int(cname),
-          clevel,
-          shuffle_to_int(shuffle),
-          typesize
-        )
+        ExCodecs.Native.blosc2_compress(data, cname, clevel, shuffle, typesize)
       end)
     end
   end
@@ -250,57 +230,4 @@ defmodule ExCodecs.Compression.Blosc2 do
   def decode(_data, _opts) do
     {:error, ExCodecs.Error.new(:invalid_data, codec: :blosc2)}
   end
-
-  defp validate_cname(cname) when cname in @valid_cnames, do: :ok
-
-  defp validate_cname(:snappy) do
-    {:error,
-     ExCodecs.Error.new(:invalid_options,
-       codec: :blosc2,
-       message:
-         ":snappy is not a standard C-Blosc2 compressor in this build; use one of: #{inspect(@valid_cnames)}"
-     )}
-  end
-
-  defp validate_cname(_),
-    do:
-      {:error,
-       ExCodecs.Error.new(:invalid_options,
-         message: "cname must be one of: #{inspect(@valid_cnames)}"
-       )}
-
-  defp validate_clevel(level) when is_integer(level) and level >= 0 and level <= 9, do: :ok
-
-  defp validate_clevel(_),
-    do:
-      {:error,
-       ExCodecs.Error.new(:invalid_options, message: "clevel must be an integer between 0 and 9")}
-
-  defp validate_shuffle(shuffle) when shuffle in @valid_shuffles, do: :ok
-
-  defp validate_shuffle(_),
-    do:
-      {:error,
-       ExCodecs.Error.new(:invalid_options,
-         message: "shuffle must be one of: #{inspect(@valid_shuffles)}"
-       )}
-
-  defp validate_typesize(ts) when is_integer(ts) and ts > 0 and ts <= 255, do: :ok
-
-  defp validate_typesize(_),
-    do:
-      {:error,
-       ExCodecs.Error.new(:invalid_options,
-         message: "typesize must be an integer from 1 to 255"
-       )}
-
-  defp cname_to_int(:blosclz), do: 0
-  defp cname_to_int(:lz4), do: 1
-  defp cname_to_int(:lz4hc), do: 2
-  defp cname_to_int(:zlib), do: 4
-  defp cname_to_int(:zstd), do: 5
-
-  defp shuffle_to_int(:none), do: 0
-  defp shuffle_to_int(:byte), do: 1
-  defp shuffle_to_int(:bit), do: 2
 end

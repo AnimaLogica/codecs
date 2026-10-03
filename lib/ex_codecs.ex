@@ -33,7 +33,9 @@ defmodule ExCodecs do
   | `:lz4` | Size-prepended `lz4_flex` blocks |
   | `:snappy` | Standalone Snappy codec |
   | `:bzip2` | Pure-Rust bzip2 |
+  | `:blosc` | **Blosc1 chunk**: the c-blosc 1.x / numcodecs / Zarr `blosc` format |
   | `:blosc2` | **C-Blosc2 chunk** (not super-chunk / B2ND / `.b2frame`) |
+  | `:crc32c` | Appends / verifies a little-endian CRC32C (Zarr v3 `crc32c`) |
 
   ### Snappy vs Blosc2 `cname: :snappy`
 
@@ -41,6 +43,12 @@ defmodule ExCodecs do
   - `ExCodecs.encode(:blosc2, data, cname: :snappy)` — **rejected** (`:invalid_options`).
     Snappy is not a standard C-Blosc2 inner compressor in this build; use
     `:lz4`, `:blosclz`, `:zstd`, `:lz4hc`, or `:zlib` inside Blosc2.
+
+  ### Blosc vs Blosc2
+
+  `:blosc` writes Blosc1 chunks, which c-blosc 1.x, numcodecs and zarr-python
+  read. `:blosc2` writes the newer Blosc2 chunk format, which c-blosc 1.x
+  rejects. Both decode either format. Use `:blosc` for Zarr data.
 
   ### Blosc2 “chunk only”
 
@@ -65,7 +73,7 @@ defmodule ExCodecs do
       {:ok, cloud} = ExCodecs.Spatial.decode(ply, format: :ply)
 
       ExCodecs.available_codecs()
-      #=> [:blosc2, :bzip2, :gsplat, :lz4, :ply, :snappy, :spatial_binary, :zstd]
+      #=> [:blosc, :blosc2, :bzip2, :crc32c, :gsplat, :lz4, :ply, :snappy, :spatial_binary, :zstd]
 
   ## Error policy
 

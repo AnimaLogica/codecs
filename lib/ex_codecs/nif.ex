@@ -71,6 +71,12 @@ defmodule ExCodecs.NIF do
   def wrap(codec, {:error, :invalid_options}),
     do: {:error, ExCodecs.Error.new(:invalid_options, codec: codec)}
 
+  def wrap(codec, {:error, :truncated_input}),
+    do: {:error, ExCodecs.Error.new(:truncated_input, codec: codec)}
+
+  def wrap(codec, {:error, :checksum_mismatch}),
+    do: {:error, ExCodecs.Error.new(:checksum_mismatch, codec: codec)}
+
   def wrap(codec, {:error, reason})
       when is_atom(reason) and
              reason not in [
@@ -81,7 +87,8 @@ defmodule ExCodecs.NIF do
                :invalid_options,
                :nif_not_loaded,
                :io_error,
-               :truncated_input
+               :truncated_input,
+               :checksum_mismatch
              ] do
     {:error,
      ExCodecs.Error.new(:invalid_data,

@@ -1,6 +1,6 @@
 [package]
 name = "ex_codecs_native"
-version = "0.2.3"
+version = "0.2.4"
 authors = ["ExCodecs Team"]
 edition = "2021"
 # structured-zstd declares MSRV 1.92 but calls the now-safe __cpuid without
@@ -22,6 +22,8 @@ flate2 = { version = "1", default-features = false, features = ["rust_backend"] 
 # bzip2 0.6 defaults to pure-Rust libbz2-rs-sys (no C libbzip2).
 bzip2 = "0.6"
 # Official Blosc2 chunk format (BloscLZ, LZ4, LZ4HC, Zlib, Zstd + filters).
+# CRC32C (Castagnoli) for the Zarr v3 crc32c codec; pure Rust with HW acceleration.
+crc32c = "0.6"
 blosc2-pure-rs = { version = "0.2.4", default-features = false, features = ["zlib-rs"] }
 memmap2 = "0.9"
 

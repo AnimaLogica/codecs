@@ -32,6 +32,7 @@ defmodule ExCodecs.Error do
   | `:io_error` | File read/write failure |
   | `:truncated_input` | Incomplete binary |
   | `:output_limit_exceeded` | Decompress would exceed `max_output_size` |
+  | `:checksum_mismatch` | Stored checksum does not match the data |
 
   ## As exception
 
@@ -70,6 +71,7 @@ defmodule ExCodecs.Error do
           | :io_error
           | :truncated_input
           | :output_limit_exceeded
+          | :checksum_mismatch
 
   @typedoc """
   Structured ExCodecs error and exception.
@@ -179,6 +181,9 @@ defmodule ExCodecs.Error do
 
   defp default_message(:output_limit_exceeded),
     do: "Decompressed output exceeded the configured max_output_size"
+
+  defp default_message(:checksum_mismatch),
+    do: "The stored checksum does not match the data"
 
   defp default_message(reason), do: "Error: #{reason}"
 

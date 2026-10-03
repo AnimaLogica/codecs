@@ -4,7 +4,7 @@ defmodule ExCodecs.Native do
   Native NIF module providing Rust-based compression implementations.
 
   This module loads precompiled NIF binaries for Zstd, LZ4, Snappy, Bzip2,
-  and Blosc2 compression/decompression via `RustlerPrecompiled`. If a precompiled
+  Blosc (Blosc1 chunks), Blosc2 and CRC32C via `RustlerPrecompiled`. If a precompiled
   artifact is not available for the current platform, it falls back to compiling
   the Rust NIF from source (requires the Rust toolchain).
 
@@ -25,7 +25,7 @@ defmodule ExCodecs.Native do
     # This URL must match the GitHub repo that hosts release artifacts.
     # If the repo is renamed, published checksums become invalid until
     # a new release is cut. Keep in sync with @source_url in mix.exs.
-    base_url: "https://github.com/thanos/codecs/releases/download/v#{version}",
+    base_url: "https://github.com/AnimaLogica/codecs/releases/download/v#{version}",
     mode: :release,
     nif_versions: ["2.17"],
     targets: [
@@ -57,6 +57,17 @@ defmodule ExCodecs.Native do
   def bzip2_compress(_data, _block_size), do: :erlang.nif_error(:nif_not_loaded)
   @doc false
   def bzip2_decompress(_data, _max_output_size), do: :erlang.nif_error(:nif_not_loaded)
+
+  @doc false
+  def blosc1_compress(_data, _cname, _clevel, _shuffle, _typesize),
+    do: :erlang.nif_error(:nif_not_loaded)
+
+  @doc false
+  def crc32c_checksum(_data), do: :erlang.nif_error(:nif_not_loaded)
+  @doc false
+  def crc32c_encode(_data), do: :erlang.nif_error(:nif_not_loaded)
+  @doc false
+  def crc32c_decode(_data), do: :erlang.nif_error(:nif_not_loaded)
 
   @doc false
   def blosc2_compress(_data, _cname, _clevel, _shuffle, _typesize),

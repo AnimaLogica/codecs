@@ -56,7 +56,7 @@ pub fn blosc2_compress<'a>(
     };
     let filter = filter_from_shuffle(shuffle.clamp(0, 2) as u8);
 
-    let overhead = BLOSC2_MAX_OVERHEAD as usize;
+    let overhead = BLOSC2_MAX_OVERHEAD;
     let max_src = (i32::MAX as usize).saturating_sub(overhead);
     if data.len() > max_src {
         return err(env, atoms::invalid_data());

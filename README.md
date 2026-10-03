@@ -1,12 +1,12 @@
 # ExCodecs
 
-[![CI](https://github.com/thanos/codecs/actions/workflows/ci.yml/badge.svg)](https://github.com/thanos/codecs/actions/workflows/ci.yml)
+[![CI](https://github.com/AnimaLogica/codecs/actions/workflows/ci.yml/badge.svg)](https://github.com/AnimaLogica/codecs/actions/workflows/ci.yml)
 [![Hex.pm](https://img.shields.io/hexpm/v/ex_codecs.svg)](https://hex.pm/packages/ex_codecs)
 [![Hex.pm Downloads](https://img.shields.io/hexpm/dt/ex_codecs.svg)](https://hex.pm/packages/ex_codecs)
 [![Documentation](https://img.shields.io/badge/docs-hex.pm-blue.svg)](https://hexdocs.pm/ex_codecs)
-[![License](https://img.shields.io/hexpm/l/ex_codecs.svg)](https://github.com/thanos/codecs/blob/main/LICENSE)
+[![License](https://img.shields.io/hexpm/l/ex_codecs.svg)](https://github.com/AnimaLogica/codecs/blob/main/LICENSE)
 [![Elixir](https://img.shields.io/badge/Elixir-%7E%3E%201.17-purple.svg)](https://elixir-lang.org)
-[![Coverage Status](https://coveralls.io/repos/github/thanos/codecs/badge.svg?branch=main)](https://coveralls.io/github/thanos/codecs?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/AnimaLogica/codecs/badge.svg?branch=main)](https://coveralls.io/github/AnimaLogica/codecs?branch=main)
 
 An extensible BEAM-native codec framework for Elixir with specialized category
 APIs. Binary registry codecs use `ExCodecs.encode/3` / `decode/3`;
@@ -55,7 +55,7 @@ mix deps.get && mix compile
 
 Precompiled NIF binaries are available for macOS (Intel and ARM64), Linux
 (x86_64 and ARM64, glibc and musl), and Windows (x86_64). They are downloaded
-automatically from the [GitHub releases](https://github.com/thanos/codecs/releases)
+automatically from the [GitHub releases](https://github.com/AnimaLogica/codecs/releases)
 when you run `mix deps.get`. If a precompiled artifact is not available for your
 target, ExCodecs falls back to compiling the Rust NIF from source (requires
 Rust 1.94+). The native crate is **pure Rust** (no C toolchain / system
@@ -77,8 +77,8 @@ original #=> "hello world"
 {:ok, original}   = ExCodecs.Compression.decompress(:lz4, compressed)
 
 # Shared discovery
-ExCodecs.available_codecs()  #=> [:blosc2, :bzip2, :gsplat, :lz4, :ply, :snappy, :spatial_binary, :zstd]
-ExCodecs.available_codecs(:compression) #=> [:blosc2, :bzip2, :lz4, :snappy, :zstd]
+ExCodecs.available_codecs()  #=> [:blosc, :blosc2, :bzip2, :crc32c, :gsplat, :lz4, :ply, :snappy, :spatial_binary, :zstd]
+ExCodecs.available_codecs(:compression) #=> [:blosc, :blosc2, :bzip2, :lz4, :snappy, :zstd]
 ExCodecs.available_codecs(:spatial)     #=> [:gsplat, :ply, :spatial_binary]
 ExCodecs.supports?(:zstd)    #=> true
 ExCodecs.codec_info(:zstd)   #=> {:ok, %ExCodecs.Codec{name: :zstd, category: :compression, ...}}
@@ -161,7 +161,9 @@ Returns a structured `%ExCodecs.Codec{}` struct with metadata, or
 | `:lz4`    | compression | No            | No         | size-prepended `lz4_flex`; `max_output_size` |
 | `:snappy` | compression | No            | No         | `max_output_size` |
 | `:bzip2`  | compression | Yes           | No         | `block_size` 1-9; `max_output_size` |
+| `:blosc`  | compression | Yes           | No         | **Blosc1 chunk** (c-blosc 1.x / numcodecs / Zarr). `cname` / `clevel` / `shuffle` / `typesize`; `max_output_size` |
 | `:blosc2` | compression | Yes           | No         | C-Blosc2 **chunk** only. `cname` / `clevel` / `shuffle` / `typesize`; `max_output_size` |
+| `:crc32c` | checksum    | No            | No         | Appends / verifies a little-endian CRC32C (Zarr v3 `crc32c`) |
 
 ### Spatial formats
 
