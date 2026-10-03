@@ -12,4 +12,6 @@ atoms! {
     nif_not_loaded,
     output_limit_exceeded,
     io_error,
+    truncated_input,
+    checksum_mismatch,
 }

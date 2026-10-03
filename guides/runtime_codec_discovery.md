@@ -91,10 +91,10 @@ List all catalog entries that are loaded and functional:
 
 ```elixir
 ExCodecs.available_codecs()
-# => [:blosc2, :bzip2, :gsplat, :lz4, :ply, :snappy, :spatial_binary, :zstd]
+# => [:blosc, :blosc2, :bzip2, :crc32c, :gsplat, :lz4, :ply, :snappy, :spatial_binary, :zstd]
 
 ExCodecs.available_codecs(:compression)
-# => [:blosc2, :bzip2, :lz4, :snappy, :zstd]
+# => [:blosc, :blosc2, :bzip2, :lz4, :snappy, :zstd]
 
 ExCodecs.available_codecs(:spatial)
 # => [:gsplat, :ply, :spatial_binary]
@@ -320,7 +320,7 @@ The registry distinguishes between "all registered codecs" and "available codecs
 ```elixir
 # All codecs known to the registry (including unavailable ones)
 ExCodecs.CodecRegistry.all_codecs()
-# => [:blosc2, :bzip2, :gsplat, :lz4, :ply, :snappy, :spatial_binary, :zstd]
+# => [:blosc, :blosc2, :bzip2, :crc32c, :gsplat, :lz4, :ply, :snappy, :spatial_binary, :zstd]
 
 # Only entries whose implementation is loaded and functional
 ExCodecs.CodecRegistry.available_codecs()

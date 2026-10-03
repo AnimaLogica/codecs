@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.4] - unreleased
+
+### Added
+
+- `:blosc` codec (`ExCodecs.Compression.Blosc`): Blosc1 chunks in the c-blosc
+  1.x wire format, as read and written by numcodecs, zarr-python and the Zarr
+  v2/v3 `blosc` codec. Pure Rust; all compressors except Snappy, byte and bit
+  shuffle. Output is verified to decode in c-blosc 1.21.
+- `:crc32c` codec (`ExCodecs.Checksum.Crc32c`): appends / verifies a
+  little-endian CRC32C (Zarr v3 `crc32c`), plus `Crc32c.checksum/1`.
+- `:checksum_mismatch` error reason.
+- `mix nif.verify_checksums`, run automatically before `mix hex.publish`.
+
+### Fixed
+
+- The 0.2.3 package on Hex has an empty `checksum-Elixir.ExCodecs.Native.exs`,
+  so precompiled NIFs cannot be downloaded and installs fail without a Rust
+  toolchain. CI published a correct package, which a local `mix hex.publish`
+  then replaced. `mix hex.publish` now refuses to run unless the checksum file
+  covers every target for the current version.
+- NIF `:truncated_input` errors were reported as `:invalid_data`.
+
+### Notes
+
+- `:blosc2` writes the Blosc2 chunk format, which c-blosc 1.x (numcodecs,
+  zarr-python) cannot read. Use `:blosc` for Zarr data.
+
 ## [0.2.3] - 2026-07-18
 
 ### Added
@@ -162,10 +189,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Benchmarks via benchee.
 - Credo and Dialyzer integration.
 
-[Unreleased]: https://github.com/thanos/codecs/compare/v0.2.3...HEAD
-[0.2.3]: https://github.com/thanos/codecs/releases/tag/v0.2.3
-[0.2.2]: https://github.com/thanos/codecs/releases/tag/v0.2.2
-[0.2.1]: https://github.com/thanos/codecs/releases/tag/v0.2.1
-[0.2.0]: https://github.com/thanos/codecs/releases/tag/v0.2.0
-[0.1.1]: https://github.com/thanos/codecs/releases/tag/v0.1.1
-[0.1.0]: https://github.com/thanos/codecs/releases/tag/v0.1.0
+[Unreleased]: https://github.com/AnimaLogica/codecs/compare/v0.2.4...HEAD
+[0.2.4]: https://github.com/AnimaLogica/codecs/releases/tag/v0.2.4
+[0.2.3]: https://github.com/AnimaLogica/codecs/releases/tag/v0.2.3
+[0.2.2]: https://github.com/AnimaLogica/codecs/releases/tag/v0.2.2
+[0.2.1]: https://github.com/AnimaLogica/codecs/releases/tag/v0.2.1
+[0.2.0]: https://github.com/AnimaLogica/codecs/releases/tag/v0.2.0
+[0.1.1]: https://github.com/AnimaLogica/codecs/releases/tag/v0.1.1
+[0.1.0]: https://github.com/AnimaLogica/codecs/releases/tag/v0.1.0

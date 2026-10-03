@@ -197,7 +197,11 @@ jobs:
       - name: Generate checksum file from GitHub Release
         # Downloads all precompiled tarballs that were just attached to the
         # GitHub release and writes checksum-Elixir.ExCodecs.Native.exs.
-        run: mix rustler_precompiled.download ExCodecs.Native --all --print 2>/dev/null
+        run: mix rustler_precompiled.download ExCodecs.Native --all --print
+
+      - name: Verify checksum file covers every target
+        # Also enforced by the hex.publish alias in mix.exs.
+        run: mix nif.verify_checksums
 
       - name: Publish to Hex
         run: mix hex.publish --yes

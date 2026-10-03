@@ -11,6 +11,7 @@ defmodule ExCodecs.Compression do
     * `ExCodecs.Compression.Lz4`
     * `ExCodecs.Compression.Snappy` — standalone Snappy (not Blosc2 `cname: :snappy`)
     * `ExCodecs.Compression.Bzip2`
+    * `ExCodecs.Compression.Blosc` — Blosc1 **chunk** (c-blosc 1.x, numcodecs, Zarr)
     * `ExCodecs.Compression.Blosc2` — C-Blosc2 **chunk** only
 
   ## Examples
@@ -45,7 +46,7 @@ defmodule ExCodecs.Compression do
 
       iex> codecs = ExCodecs.Compression.available_codecs()
       iex> Enum.map(codecs, & &1.name)
-      [:blosc2, :bzip2, :lz4, :snappy, :zstd]
+      [:blosc, :blosc2, :bzip2, :lz4, :snappy, :zstd]
       iex> Enum.all?(codecs, &(&1.category == :compression))
       true
   """

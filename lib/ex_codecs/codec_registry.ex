@@ -20,7 +20,7 @@ defmodule ExCodecs.CodecRegistry do
   ## Typical use
 
       iex> ExCodecs.available_codecs()
-      [:blosc2, :bzip2, :gsplat, :lz4, :ply, :snappy, :spatial_binary, :zstd]
+      [:blosc, :blosc2, :bzip2, :crc32c, :gsplat, :lz4, :ply, :snappy, :spatial_binary, :zstd]
 
       iex> ExCodecs.supports?(:zstd)
       true

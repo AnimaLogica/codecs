@@ -25,6 +25,15 @@ const PLY_UINT: u8 = 6;
 const PLY_FLOAT: u8 = 7;
 const PLY_DOUBLE: u8 = 8;
 
+type GsplRow = (
+    (f64, f64, f64),
+    (f64, f64, f64),
+    f64,
+    (f64, f64, f64),
+    (f64, f64, f64, f64),
+    Vec<f64>,
+);
+
 pub struct MappedSpatial {
     mmap: Mmap,
 }
@@ -439,14 +448,7 @@ fn pack_excp_point(buf: &mut Vec<u8>, term: Term, flags: u16) -> Result<(), ()> 
 }
 
 fn pack_gspl_point(buf: &mut Vec<u8>, term: Term, sh_rest: u16) -> Result<(), ()> {
-    let (pos, color, opacity, scale, rot, sh): (
-        (f64, f64, f64),
-        (f64, f64, f64),
-        f64,
-        (f64, f64, f64),
-        (f64, f64, f64, f64),
-        Vec<f64>,
-    ) = term.decode().map_err(|_| ())?;
+    let (pos, color, opacity, scale, rot, sh): GsplRow = term.decode().map_err(|_| ())?;
 
     let (x, y, z) = pos;
     let (r, g, b) = color;

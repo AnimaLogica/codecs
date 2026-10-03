@@ -29,7 +29,7 @@ use RustlerPrecompiled,
   otp_app: :ex_codecs,
   crate: :ex_codecs_native,
   version: version,
-  base_url: "https://github.com/thanos/codecs/releases/download/v#{version}",
+  base_url: "https://github.com/AnimaLogica/codecs/releases/download/v#{version}",
   mode: :release,
   nif_versions: ["2.17"],
   targets: [
